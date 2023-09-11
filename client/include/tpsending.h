@@ -23,17 +23,25 @@ namespace TP {
 
     public:
         /**
-       * Description: 获取发送数据包为一个hex
-       * Auth:        Strong
-       * Data:        2023.9.8
-       * Input:       viod
-       * Ouput:       返回这个数组
-       * **/
+        * Description: 获取发送数据包为一个hex
+        * Auth:        Strong
+        * Data:        2023.9.8
+        * Input:       viod
+        * Ouput:       返回这个数组
+        * **/
         QByteArray getSendingByte();
+        /**
+        * Description: 获取发送数据包为一个hex
+        * Auth:        Strong
+        * Data:        2023.9.8
+        * Input:       viod
+        * Ouput:       返回这个数组
+        * **/
+        QString getServerMark();
 
     private:
         /** 该包通讯的服务器ip **/
-        QString ip;
+        QString serverMark;
         /** 该包的数据的字节长度 **/
         int size{};
         /** 发送数据包的帧头 **/

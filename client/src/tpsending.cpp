@@ -12,3 +12,7 @@ TP::tpsending::~tpsending() = default;
 QByteArray TP::tpsending::getSendingByte() {
     return {0X55, static_cast<char>(0Xaa)};
 }
+
+QString TP::tpsending::getServerMark() {
+    return serverMark;
+}

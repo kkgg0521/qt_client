@@ -53,12 +53,6 @@ bool TP::Client::connectServer(const QString &hostName, int Port)
     return true;
 }
 
-void TP::Client::printConnectedHost() //打印连接成功的服务器ip
-{
-    for(auto &pair: ConnectMap.toStdMap())
-        qDebug() << pair.first;
-}
-
 void TP::Client::recvOneData(const tprecving &m_replay)
 {
     C_recvQueue->push(m_replay);
@@ -91,54 +85,16 @@ void TP::Client::serverDisconnected(QAbstractSocket::SocketError socketError, QS
             qDebug() << "发生了其他错误";
             break;
     }
-
-//    QObject* senderObject = QObject::sender(); // 获取发送信号的对象
-//
-//    if (senderObject && senderObject->inherits("Connection"))// 判断是否是Connection类型的对象
-//    {
-//        emit disconected();
-//
-//        // 将senderObject转换为Connection类型的指针
-//        Connection* connection = qobject_cast<Connection*>(senderObject);
-//
-//        QString disconnectedIP = ""; // 存储断开连接的服务器IP
-//
-//        // 在ConnectMap中查找对应的服务器IP
-//        for (auto it = ConnectMap.begin(); it != ConnectMap.end(); ++it)
-//        {
-//            // 如果找到与connection相匹配的Connection对象，则获取对应的IP
-//            if (it.value() == connection)
-//            {
-//                disconnectedIPs.append(it.key());
-//                disconnectedIP = it.key();
-//                break;
-//            }
-//        }
-//
-//        if (!disconnectedIP.isEmpty()) // 如果找到了对应的服务器IP
-//        {
-//            qDebug() << "服务器" << disconnectedIP << "断开连接";
-//            reconnectTimer->start(5000); // 例如设置为5秒钟尝试一次重新连接
-//        }
-//    }
 }
 
-bool TP::Client::sendData(const tpsending& m_sending)
+bool TP::Client::sendData(tpsending m_sending)
 {
-    return true;
-}
-
-void TP::Client::reconnect()  // 重新连接断开的服务器
-{
-    for (const QString& ip : disconnectedIPs)
+    if (ConnectMap.contains(m_sending.getServerMark()))
     {
-        reconnectMethod(ip);
-    }
+        return ConnectMap[m_sending.getServerMark()]->SendData(m_sending);
 
-    if (disconnectedIPs.isEmpty())
-    {
-        reconnectTimer->stop(); //全部重连成功，再关闭定时器
     }
+    return false;
 }
 
 void TP::Client::reconnectMethod(const QString& ip)

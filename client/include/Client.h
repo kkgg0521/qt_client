@@ -34,11 +34,6 @@ namespace TP {
         * Ouput:       服务器是否链接成功
         * **/
         bool connectServer(const QString &hostName, int port);
-
-        void printConnectedHost();
-
-        void reconnect(); //重连接口
-
         void reconnectMethod(const QString &ip);
 
     public slots:
@@ -47,27 +42,22 @@ namespace TP {
         * Auth:        Strong
         * Data:        2023.9.8
         * **/
-        bool sendData(const tpsending &m_sending);
+        bool sendData(tpsending m_sending);
         /**
         * Description: 从服务器接收到一个数据包传递到客户端中
         * Auth:        Strong
         * Data:        2023.9.8
         * **/
         void recvOneData(const tprecving &m_replay);
-
-
+        /**
+        * Description: 服务端断开链接的信号，发送一个断开链接的标志
+        * Auth:        Strong
+        * Data:        2023.9.11
+        * **/
         void serverDisconnected(QAbstractSocket::SocketError socketError ,QString this_serverMark); //获取断开服务器的ip
 
     signals:
-
-        void logMessage(const QString &message);//用于发送日志信息给UI界面
-        void logMsg(); //同样用于向UI发送信号，但不需要参数，比如UI仅在收到此信号后弹窗...
         void connectFiled();
-
-        void disconected();
-
-        void reconnected();
-
     private:
         /** 所有链接的服务器 MAP **/
         QMap<QString, Connection *> ConnectMap;
@@ -75,7 +65,7 @@ namespace TP {
         QList<QString> disconnectedIPs; //存储连接中断的服务器
 
         recvThread *m_recvThread;
-
+//        sendThread *m_recvThread;
         sendQueue *C_sendQueue;
         recvQueue *C_recvQueue;
 
