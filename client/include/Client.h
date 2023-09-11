@@ -56,7 +56,7 @@ namespace TP {
         void recvOneData(const tprecving &m_replay);
 
 
-        void handleServerDisconnected(); //获取断开服务器的ip
+        void serverDisconnected(QAbstractSocket::SocketError socketError ,QString this_serverMark); //获取断开服务器的ip
 
     signals:
 

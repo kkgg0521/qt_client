@@ -46,8 +46,14 @@ namespace TP {
         void ReadData(tprecving recv_replay);
 
         void ClientOFF();
-
-        void ConnectOFF();
+        /**
+        * Description: 服务器链接发生异常
+        * Auth:        Strong
+        * Data:        2023.9.11
+        * Input:
+        * Ouput:       服务器异常状态
+        * **/
+        void ConnectOFF(QAbstractSocket::SocketError socketError, QString this_serverMark);
 
     private slots:
 

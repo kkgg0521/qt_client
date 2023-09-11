@@ -39,9 +39,10 @@ bool TP::Client::connectServer(const QString &hostName, int Port)
     if (Communicator->socket.waitForConnected()) {
         QString serverName = hostName+":"+QString::number(Port);
         ConnectMap.insert(serverName, Communicator); //连接成功，将服务器ip,以及通讯对象填入map
-//        connect(Communicator, &Connection::ConnectOFF, this, &Client::handleServerDisconnected); // 连接ServerOFF()信号与处理函数
-//        qDebug() << "连接到服务器" << hostName;
-        connect(Communicator, &Connection::ReadData, this, &Client::recvOneData); //接收服务器缓存
+        connect(Communicator, &Connection::ReadData, this, &Client::recvOneData);
+
+        connect(Communicator, &Connection::ConnectOFF, this, &Client::serverDisconnected);
+
     }else
     {
         qDebug("connect failed ip address "); //输出失败日志
@@ -63,37 +64,63 @@ void TP::Client::recvOneData(const tprecving &m_replay)
     C_recvQueue->push(m_replay);
 }
 
-void TP::Client::handleServerDisconnected()
-{    
-    QObject* senderObject = QObject::sender(); // 获取发送信号的对象
+void TP::Client::serverDisconnected(QAbstractSocket::SocketError socketError, QString this_serverMark)
+{
 
-    if (senderObject && senderObject->inherits("Connection"))// 判断是否是Connection类型的对象
+    switch (socketError)
     {
-        emit disconected();
-
-        // 将senderObject转换为Connection类型的指针
-        Connection* connection = qobject_cast<Connection*>(senderObject);
-
-        QString disconnectedIP = ""; // 存储断开连接的服务器IP
-
-        // 在ConnectMap中查找对应的服务器IP
-        for (auto it = ConnectMap.begin(); it != ConnectMap.end(); ++it)
-        {
-            // 如果找到与connection相匹配的Connection对象，则获取对应的IP
-            if (it.value() == connection)
-            {
-                disconnectedIPs.append(it.key());
-                disconnectedIP = it.key();
-                break;
-            }
-        }
-
-        if (!disconnectedIP.isEmpty()) // 如果找到了对应的服务器IP
-        {
-            qDebug() << "服务器" << disconnectedIP << "断开连接";
-            reconnectTimer->start(5000); // 例如设置为5秒钟尝试一次重新连接
-        }
+        case QAbstractSocket::ConnectionRefusedError:
+            qDebug() << "连接被拒绝";
+            break;
+        case QAbstractSocket::RemoteHostClosedError:
+            // todo:这里指针释放存在报错奔溃，尚未查找奔溃的原因
+            //delete ConnectMap[this_serverMark];
+            ConnectMap.remove(this_serverMark);
+            break;
+        case QAbstractSocket::HostNotFoundError:
+            qDebug() << "找不到主机";
+            break;
+        case QAbstractSocket::SocketTimeoutError:
+            qDebug() << "连接超时";
+            break;
+        case QAbstractSocket::NetworkError:
+            qDebug() << "网络错误";
+            break;
+            // 其他错误类型的处理
+        default:
+            qDebug() << "发生了其他错误";
+            break;
     }
+
+//    QObject* senderObject = QObject::sender(); // 获取发送信号的对象
+//
+//    if (senderObject && senderObject->inherits("Connection"))// 判断是否是Connection类型的对象
+//    {
+//        emit disconected();
+//
+//        // 将senderObject转换为Connection类型的指针
+//        Connection* connection = qobject_cast<Connection*>(senderObject);
+//
+//        QString disconnectedIP = ""; // 存储断开连接的服务器IP
+//
+//        // 在ConnectMap中查找对应的服务器IP
+//        for (auto it = ConnectMap.begin(); it != ConnectMap.end(); ++it)
+//        {
+//            // 如果找到与connection相匹配的Connection对象，则获取对应的IP
+//            if (it.value() == connection)
+//            {
+//                disconnectedIPs.append(it.key());
+//                disconnectedIP = it.key();
+//                break;
+//            }
+//        }
+//
+//        if (!disconnectedIP.isEmpty()) // 如果找到了对应的服务器IP
+//        {
+//            qDebug() << "服务器" << disconnectedIP << "断开连接";
+//            reconnectTimer->start(5000); // 例如设置为5秒钟尝试一次重新连接
+//        }
+//    }
 }
 
 bool TP::Client::sendData(const tpsending& m_sending)
