@@ -30,6 +30,8 @@ add_library(Client
         include/tprecving.h
         src/recvThread.cpp
         include/recvThread.h
+        src/sendThread.cpp
+        include/sendThread.h
 )
 
 target_include_directories(Client PUBLIC include)

@@ -15,6 +15,9 @@ TP::Client::Client(QObject *parent) : QObject(parent)
 
     m_recvThread = new recvThread(this, C_recvQueue);
     m_recvThread->start();
+    m_sendThread = new sendThread(this, C_sendQueue);
+    m_sendThread->start();
+
 }
 
 TP::Client::~Client()
@@ -26,6 +29,7 @@ TP::Client::~Client()
     }
     delete reconnectTimer;
     delete m_recvThread;
+    delete m_sendThread;
     delete C_sendQueue;
     delete C_recvQueue;
 
@@ -45,8 +49,6 @@ bool TP::Client::connectServer(const QString &hostName, int Port)
 
     }else
     {
-        qDebug("connect failed ip address "); //输出失败日志
-        emit connectFiled();
         delete Communicator;
         return false;
     }

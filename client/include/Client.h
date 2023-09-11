@@ -12,6 +12,7 @@ Data@ 2023/7/22
 #include "sendQueue.h"
 #include "recvQueue.h"
 #include "recvThread.h"
+#include "sendThread.h"
 
 namespace TP {
     /**
@@ -65,7 +66,7 @@ namespace TP {
         QList<QString> disconnectedIPs; //存储连接中断的服务器
 
         recvThread *m_recvThread;
-//        sendThread *m_recvThread;
+        sendThread *m_sendThread;
         sendQueue *C_sendQueue;
         recvQueue *C_recvQueue;
 
