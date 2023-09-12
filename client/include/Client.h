@@ -16,10 +16,10 @@ Data@ 2023/7/22
 
 namespace TP {
     /**
-     * Description: 界面使用的客户端与服务器通讯的
-     * Auth:        Strong
-     * Data:        2023.9.8
-     * **/
+    * Description: 界面使用的客户端与服务器通讯的
+    * Auth:        Strong
+    * Data:        2023.9.8
+    * **/
     class Client : public QObject {
     Q_OBJECT
     public:
@@ -35,8 +35,8 @@ namespace TP {
         * Ouput:       服务器是否链接成功
         * **/
         bool connectServer(const QString &hostName, int port);
-        void reconnectMethod(const QString &ip);
 
+        void reconnectMethod(const QString &ip);
     public slots:
         /**
         * Description: 向服务端发送一个数据包
