@@ -11,10 +11,10 @@ Data@ 2023/9/7
 
 namespace TP {
     /**
-     * Description: S端回复或主动推送到C端的数据包
-     * Auth:        Strong
-     * Data:        2023.9.7
-     * **/
+    * Description: S端回复或主动推送到C端的数据包
+    * Auth:        Strong
+    * Data:        2023.9.7
+    * **/
     class recvQueue {
     public:
         recvQueue();
